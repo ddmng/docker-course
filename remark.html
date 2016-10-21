@@ -35,14 +35,14 @@
 class: center, middle
 
 # Docker e i container
-### Verso i microservizi
+### TODO Mettere un sottotitolo
 
 ---
 
 # Agenda
 
 1. Cosa sono **i container**
-1. Chi &egrave; **Docker**
+1. Cosa &egrave; **Docker**
 2. Esempi rapidi
   3. Ubuntu `bash`
   4. Python REPL
@@ -59,10 +59,58 @@ class: center, middle
 ---
 
 # Cosa sono **i container**
+**Operating-system-level virtualization** is a server virtualization
+method in which the kernel of an operating system allows the
+existence of multiple **isolated user-space instances**, instead
+of just one. Such instances may look and feel **like
+a real server** from the point of view of its owners and users.
+
+On Unix-like operating systems, this technology can be seen
+as an advanced implementation of the standard chroot mechanism.
+In addition to isolation mechanisms, the kernel often
+provides resource-management features to limit the impact
+of one container's activities on other containers.
+
+Source: [Wikipedia.org](https://en.wikipedia.org/wiki/Operating-system-level_virtualization)
+
 ---
-# Chi &egrave; **Docker**
+# Cosa &egrave; **Docker**
+Docker provides a way to run applications securely isolated
+in a container, packaged with all its dependencies and
+libraries.
+
+Because containers are lightweight
+and run without the extra load of a hypervisor, you can
+run many applications that all rely on different libraries
+and environments on a single kernel, each one never interfering
+with the other.
+
+Source: [Docker.com](https://docs.docker.com/)
+---
+# Docker [contd.]
+1. Get your code and its dependencies into Docker containers:
+  * Write a Dockerfile that specifies the execution environment and pulls in your code.
+  * If your app d use Docker Datacenter,epends on external applications (such as
+  Redis, or MySQL), simply find them on a registry such as
+  Docker Hub, and refer to them in a Docker Compose file,
+  along with a reference to your application, so they’ll
+  run simultaneously.
+  * Build, then run your containers as you develop.
+2. Configure networking and storage for your solution,
+if needed.
+3. Upload builds to a registry to collaborate with your team.
+5. Finally, deploy to your preferred cloud provider
+or on your own on-premise hardware.
+
 ---
 # Esempi rapidi
+Faremo degli esempi rapidi di avvio di diversi container,
+basandoci su **immagini** presenti nel Docker Hub prima di
+passare a costruire le nostre.
+1. Bash di Ubuntu
+2. Bash di Centos
+3. Interprete Python
+4. Interprete NodeJS
 ---
 # Ubuntu `bash`
 Per aprire una bash in un container Ubuntu 14.04 &egrave; sufficiente il seguente comando:
@@ -181,6 +229,51 @@ ciao
 ```
 ---
 # Immagini e container
+In Docker, i **container** sono istanze di **immagini**.
+
+Le immagini sono definite con dei passi descritti in files
+di testo chiamati `Dockerfile`s.
+
+Un esempio di Dockerfile (immagine) che compila ed esegue un sorgente
+in C. [`ex1`]
+```
+$ vi Dockerfile
+FROM centos:latest
+RUN yum install -y gcc
+COPY test.c /root
+COPY Makefile /root
+WORKDIR /root
+RUN make
+CMD test
+```
+Ora *buildiamo* e lanciamo un container basato su questo Dockerfile:
+```sh
+$ docker build -t test .
+$ docker run test
+Welcome to the Docker class!
+
+```
+---
+# Tag
+Il nome dell'immagine &egrave; `test`; possiamo dare il nome che
+vogliamo, usando delle `/` per categorizzare, per esempio, per
+progetto/modulo e un **tag** per marcare la versione:
+
+```sh
+$ docker build -t test:1.0.0 .
+$ docker build -t examples/test:1.0.0beta .
+$ docker build -t examples/test:latest .
+```
+Il tag `latest` &egrave; riservato ed indica il tag di default
+a cui il comando `docker` fa riferimento quando non &egrave;
+stato specificato un tag.
+
+```sh
+$ docker run -ti python
+Unable to find image 'python:latest' locally
+...
+```
+
 ---
 # `docker ps`
 ---
