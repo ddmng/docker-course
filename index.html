@@ -4,7 +4,7 @@
 
     <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation">
     <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool.">
-    <title>Remark</title>
+    <title>Corso di Docker</title>
     <style>
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -418,6 +418,76 @@ template: inverse
 ---
 template: inverse
 ## Altri esempi
+---
+.left-column[
+  ## Web server
+]
+.right-column[
+  Facciamo una immagine con nodejs+expressjs in ascolto sulla porta 3000.
+  Il sorgente:
+  ```js
+  var express = require('express');
+  var app = express();
+
+  app.get('/', function (req, res) {
+    res.send('Hello World!\n\n');
+  });
+
+  app.listen(3000, function () {
+    console.log('Example app listening on port 3000!\n\n');
+  });
+  ```
+  Il Dockerfile:
+  ```docker
+  $ vi Dockerfile
+  FROM node:latest
+
+  RUN npm install express --save
+  COPY test.js /root
+  COPY Makefile /root
+  WORKDIR /root
+  EXPOSE 3000
+
+  CMD node test.js
+  ```
+]
+---
+.left-column[
+  ## Web server in gabbia
+]
+.right-column[
+  Build dell'immagine e run del container:
+  ```sh
+  $ docker build -t dockercourse/testjs:1.0 .
+  $ docker run -ti dockercourse/testjs:1.0
+  Example app listening on port 3000!
+  ```
+  Da un'altra shell:
+  ```sh
+  $ curl localhost:3000
+  curl: (7) Failed to connect to localhost port 3000: Connection refused
+  ```
+  Il container &egrave; chiuso in una "gabbia" da cui pu&ograve; uscire solo se
+  richiesto.
+]
+---
+.left-column[
+  ## Web server in gabbia
+  ## Web server funzionante
+]
+.right-column[
+Aggiungiamo un port mapping:
+  ```sh
+  $ docker run -p 3001:3000 -ti dockercourse/testjs:1.0
+  Example app listening on port 3000!
+  ```
+  Da un'altra shell:
+  ```sh
+  $ curl localhost:3001
+  Hello World!
+
+  ```
+]
 ---
 # Docker Hub
 ---
