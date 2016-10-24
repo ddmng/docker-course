@@ -516,6 +516,7 @@ root@cce92bf1c280:~#
 ]
 ???
 NB: aprire un'altra shell; scorrere orizzontalmente e spiegare i vari campi di `docker ps`
+Lanciare anche un `docker-inspect` per far vedere le varie informazioni sul container.
 ---
 .left-column[
   ## Web server in gabbia
@@ -534,6 +535,35 @@ Aggiungiamo un "port mapping":
   Hello World!
 
   ```
+]
+???
+Cambiare porta in 3001 e testare la nuova configurazione
+---
+.left-column[
+  ## Web server in gabbia
+  ## Entrare nel container
+  ## Web server funzionante
+  ## Web server `daemon`
+]
+.right-column[
+Il flag `-d` lancia il server come demone:
+  ```sh
+  $ docker run -p 3000:3000 -d dockercourse/testjs:1.0
+  Example app listening on port 3000!
+  $
+  ```
+  Da un'altra shell:
+  ```sh
+  $ curl localhost:3000
+  Hello World!
+
+  ```
+  Esistono altri flag che si possono passare per fare in modo che sia il demone
+  Docker principale a occuparsi del ciclo di vita del container:
+```man
+  --restart string              Restart policy to apply when a container exits (default "no")
+                                Possible values are : no, on-failure[:max-retry], always, unless-stopped
+```
 ]
 ???
 Cambiare porta in 3001 e testare la nuova configurazione
