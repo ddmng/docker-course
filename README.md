@@ -19,3 +19,5 @@ Principali contenuti da includere:
 7. Esempio di ambiente di sviluppo con Docker
 
 Basato sul fantastico [remark.js](https://github.com/gnab/remark)
+
+Consultabile online su Github pages al link https://ddmng.github.io/docker-course/
