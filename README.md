@@ -1,7 +1,7 @@
-Presentazione su Docker
+Corso su Docker
 ---
 
-Slideshow per il corso su Docker e i container.
+Slideshow per un corso su Docker e i container.
 
 Principali contenuti da includere:
 1. introduzione
@@ -17,3 +17,5 @@ Principali contenuti da includere:
 6. Docker networks
 6. `docker-compose`
 7. Esempio di ambiente di sviluppo con Docker
+
+Basato sul fantastico [remark.js](https://github.com/gnab/remark)
