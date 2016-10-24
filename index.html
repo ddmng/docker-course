@@ -169,7 +169,7 @@ layout: false
   a real server** from the point of view of its owners and users.
 
   On Unix-like operating systems, this technology can be seen
-  as an advanced implementation of the standard chroot mechanism.
+  as an advanced implementation of the standard `chroot` mechanism.
   In addition to isolation mechanisms, the kernel often
   provides resource-management features to limit the impact
   of one container's activities on other containers.
@@ -197,6 +197,10 @@ with the other.
 Source: [Docker.com](https://docs.docker.com/)
 ]
 
+???
+
+Ci sono anche altri gestori di container
+
 ---
 .left-column[
   ### Cosa sono i container
@@ -205,10 +209,10 @@ Source: [Docker.com](https://docs.docker.com/)
 ]
 .right-column[
 1. Get your code and its dependencies into Docker containers:
-  * Write a Dockerfile that specifies the execution environment and pulls in your code.
-  * If your app d use Docker Datacenter,epends on external applications (such as
-  Redis, or MySQL), simply find them on a registry such as
-  Docker Hub, and refer to them in a Docker Compose file,
+  * Write a `Dockerfile` that specifies the execution environment and pulls in your code.
+  * Grab dependencies (such as
+  Redis, or MySQL) simply finding them on a registry such as
+  Docker Hub, and refer to them in a "Docker Compose" file,
   along with a reference to your application, so they’ll
   run simultaneously.
   * Build, then run your containers as you develop.
@@ -297,6 +301,9 @@ drwxrwxrwt   7 root root  4096 Sep  6 14:02 tmp
 drwxr-xr-x  13 root root  4096 Sep  6 13:59 usr
 drwxr-xr-x  18 root root  4096 Sep  6 14:02 var
 ```
+???
+Segnalare la differenza di struttura delle directory
+
 ---
 ### Python REPL
 ```sh
@@ -328,10 +335,7 @@ Enter the name of any module, keyword, or topic to get help on writing
 Python programs and using Python modules.  To quit this help utility and
 return to the interpreter, just type "quit".
 
-To get a list of available modules, keywords, symbols, or topics, type
-"modules", "keywords", "symbols", or "topics".  Each module also comes
-with a one-line summary of what it does; to list the modules whose name
-or summary contain a given string such as "spam", type "modules spam".
+...
 ```
 ---
 ### NodeJS REPL
@@ -364,13 +368,16 @@ template: inverse
   Le immagini sono definite con dei passi descritti in files
   di testo chiamati `Dockerfile`s.
 ]
+???
+Abbiamo appena creato dei "container", ma come si definisce il comportamento dei
+container?
 ---
 .left-column[
  ### Le immagini
  ### I Dockerfiles
 ]
 .right-column[
-  Un esempio di Dockerfile (immagine) che compila ed esegue un sorgente
+  Un esempio di `Dockerfile` (specifica di una immagine) che compila ed esegue un sorgente
   in C. [`ex1`]
   ```docker
   $ vi Dockerfile
@@ -389,6 +396,15 @@ template: inverse
   Welcome to the Docker class!
   ```
 ]
+???
+`test` &egrave; il nome dell'immagine; `build` serve a costruire una immagine
+a partire dal Dockerfile. I passi `FROM`, `RUN`, `COPY`, `WORKDIR` e altri, vengono eseguiti
+al build dell'immagine.
+
+`run` istanzia un container sulla base di una immagine eseguendo i comandi definiti
+nei passi `CMD` o `ENTRYPOINT`
+
+## Directory `ex1`
 ---
 .left-column[
  ### Le immagini
@@ -424,7 +440,7 @@ template: inverse
 ]
 .right-column[
   Facciamo una immagine con nodejs+expressjs in ascolto sulla porta 3000.
-  Il sorgente:
+  Il sorgente, `test.js`:
   ```js
   var express = require('express');
   var app = express();
@@ -437,7 +453,7 @@ template: inverse
     console.log('Example app listening on port 3000!\n\n');
   });
   ```
-  Il Dockerfile:
+  Il `Dockerfile`:
   ```docker
   $ vi Dockerfile
   FROM node:latest
@@ -451,6 +467,10 @@ template: inverse
   CMD node test.js
   ```
 ]
+???
+`EXPOSE` segnala a Docker che il container istanziato avr&agrave; un server-socket
+in ascolto sulla porta `3000/tcp`.
+## Directory `ex2`
 ---
 .left-column[
   ## Web server in gabbia
@@ -470,24 +490,53 @@ template: inverse
   Il container &egrave; chiuso in una "gabbia" da cui pu&ograve; uscire solo se
   richiesto.
 ]
+???
+Richiamare al concetto di isolamento del container rispetto al resto del sistema operativo.
+---
+.left-column[
+## Web server in gabbia
+## Entrare nel container
+]
+.right-column[
+Il server &egrave; effettivamente in ascolto sulla porta 3000 ma per connetterci
+dobbiamo entrare nel container.
+```sh
+docker ps
+
+CONTAINER ID        IMAGE                                      COMMAND                  CREATED             STATUS              PORTS                    NAMES
+cce92bf1c280        dockercourse/testjs:1.0                    "/bin/sh -c 'node tes"   12 seconds ago      Up 11 seconds       3000/tcp                 pensive_darwin
+
+docker exec -ti pensive_darwin bash
+root@cce92bf1c280:~# curl localhost:3000
+Hello World!
+
+root@cce92bf1c280:~#
+
+```
+]
+???
+NB: aprire un'altra shell; scorrere orizzontalmente e spiegare i vari campi di `docker ps`
 ---
 .left-column[
   ## Web server in gabbia
+  ## Entrare nel container
   ## Web server funzionante
 ]
 .right-column[
-Aggiungiamo un port mapping:
+Aggiungiamo un "port mapping":
   ```sh
-  $ docker run -p 3001:3000 -ti dockercourse/testjs:1.0
+  $ docker run -p 3000:3000 -ti dockercourse/testjs:1.0
   Example app listening on port 3000!
   ```
   Da un'altra shell:
   ```sh
-  $ curl localhost:3001
+  $ curl localhost:3000
   Hello World!
 
   ```
 ]
+???
+Cambiare porta in 3001 e testare la nuova configurazione
 ---
 # Docker Hub
 ---
