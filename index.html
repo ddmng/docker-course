@@ -489,11 +489,115 @@ Aggiungiamo un port mapping:
   ```
 ]
 ---
-# Docker Hub
+template: inverse
+## Docker Hub
+### e i registry
 ---
-# `docker ps`
+.left-column[
+  ## La direttiva `FROM`
+]
+.right-column[
+  Ogni `Dockerfile` inizia con un comando `FROM` seguito da il nome di una
+  immagine esistente:
+  ```docker
+    FROM ubuntu:latest
+    FROM ubuntu:16:04
+    FROM centos:7
+    FROM node:latest
+    FROM python:3.5
+    FROM tomcat:6.0.47-jre7
+  ```
+  Tutte queste sono immagini "ufficiali", cio&egrave; manutenute da una
+  organizzazione; le immagini create da utenti qualsiasi sono facilmente
+  riconoscibili:
+]
 ---
-# Creare un server
+.left-column[
+  ## La direttiva `FROM`
+  ## Immagini custom
+]
+.right-column[
+  il nome dell'utente &egrave; presente nel nome dell'immagine:
+```docker
+FROM rdaneel/tesseractjs:0.1
+FROM alexjc/neural-enhance
+FROM spotify/docker-gc
+```
+  Il Docker Hub &egrave; un cosiddetto "Docker Registry", un registro dove
+  gil agent `dockerd` vanno a prendere le immagini nel caso non le trovino
+  in locale. &Egrave; un reigstry *ufficiale*, ma possono esistere anche registry
+  privati:
+```docker
+FROM registry.mclab.lan:5000/jelly/metadataexplorer-fe:4.0.0
+FROM registry.medusa-labs.lan/medusa/frontend
+```
+]
+---
+.left-column[
+  ## La direttiva `FROM`
+  ## Immagini custom
+  ## Creare un registry
+]
+.right-column[
+  Per creare un registry &egrave; sufficiente lanciare un container:
+```sh
+docker run -d -p 5000:5000 --name registry registry:2
+```
+Una volta creato, &egrave; possibile trattarlo come il Docker Hub; l'unica
+differenza &egrave; che bisogna farvi riferimento esplicito, altrimenti
+`docker` cerca nel registry di default, il Docker Hub.
+```sh
+$ docker pull nginx
+$ docker tag nginx localhost:5000/nginx
+$ docker push localhost:5000/nginx
+$ docker tag dockercourse/testjs:1.0 localhost:5000/dockercourse/testjs:1.0
+$ docker push localhost:5000/dockercourse/testjs:1.0
+```
+I vantaggi sono diversi:
+* possibilit&agrave; di tenere in casa il software proprietario
+* possibilit&agrave; di lavorare senza Internet
+* maggiore velocit&agrave; di accesso grazie alla *vicinanza* al registry
+
+]
+
+---
+.left-column[
+  ## I volumi
+]
+.right-column[
+  L'unico "contatto" con l'esterno che abbiamo trattato finora &egrave; quello
+  della rete:
+```docker
+EXPOSE 9000
+...
+docker run -p 9001:9000 immagine
+```
+  Il container pu&ograve; comunicare con l'esterno anche attraverso attraverso
+  i files.
+```docker
+VOLUME /opt/files/input
+```
+Dichiara l'esistenza di un path dalla natura e il comportamento *particolari*:
+]
+---
+.left-column[
+  ## I volumi
+  ## Dettagli
+]
+.right-column[
+Dichiara l'esistenza di un path dalla natura e il comportamento *particolari*:
+* i volumi sono inizializzati alla creazione del container; se l'immagine di base
+del container conteneva dei dati a quel mount-point, tali dati sono copiati nel
+volume all'inizializzazione
+* i volumi possono essere condivisi e riutilizzati tra container
+* i dati persistono anche alla cancellazione dei volumi
+I volumi sono progettati per avere la persistenza dei dati, indipendentemente
+dal ciclo di vita del container; pertanto Docker non cancella i volumi alla
+cancellazione dei container e non effettua alcun garbage-collection quando
+non sono pi&ugrave; referenziati.
+]
+---
+# Ottimizzare di Dockerfiles
 ---
 # Accedere al filesystem dell'host
 ---
